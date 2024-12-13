@@ -17,7 +17,7 @@ namespace adventcode.test._2024
                 "3   3"
             };
 
-            IBot bot = new BotD3a();
+            IBot bot = new BotD1a();
             var resultat = bot.Compute(datas);
             Assert.Equal(11, resultat);
 

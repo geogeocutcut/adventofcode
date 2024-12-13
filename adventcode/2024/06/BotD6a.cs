@@ -91,34 +91,5 @@ namespace adventcode._2024
         }
     }
 
-    public class Guard
-    {
-        public Cell Pos;
-
-        public int VecteurInitial = 0;
-
-        public Guard()
-        {
-        }
-    }
-
-    public class Cell
-    {
-        public int X;
-        public int Y;
-
-
-
-        public bool isNotUsable=false;
-
-        public Cell(int X, int Y)
-        {
-            this.X = X;
-            this.Y = Y;
-            Neighbourg = new Cell[4];
-        }
-        public Cell[] Neighbourg
-        { get; set; }
-
-    }
+    
 }

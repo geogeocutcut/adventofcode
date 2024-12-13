@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -13,107 +12,161 @@ namespace adventcode._2024
 {
     public class BotD6b : Bot
     {
-        IList<(int, int)> _rules = new List<(int, int)>();
+        Cell[,] _map;
 
-        IDictionary<int, List<int>> _graphdependance = new Dictionary<int, List<int>>();
+        Guard _guard = new Guard(); 
 
-        IList<IList<int>> _factories = new List<IList<int>>();
-        public void InitData(IEnumerable<string> datas)
+        public override int Compute(IEnumerable<string> datas)
         {
-            foreach (string line in datas)
+            int coutLoop = 0;
+            _map=ConvertToGrid(datas.ToArray());
+
+            HashSet<Cell> visitedCell = ParcourirMap(_map);
+            
+            foreach(var c in visitedCell)
             {
-                if (string.IsNullOrEmpty(line)) continue;
-                if (line.Contains('|'))
+                // et si ma cellule était un obstacle.
+                _map[c.X,c.Y].isNotUsable = true;
+                if (IsLoopMapSimulation(_map))
+                    coutLoop += 1;
+
+                _map[c.X, c.Y].isNotUsable = false;
+            }
+
+
+            return coutLoop;
+        }
+
+        private bool IsLoopMapSimulation(Cell[,] map)
+        {
+            HashSet<string> parcouru = new HashSet<string>();
+
+            var pos = _map[_guard.Pos.X, _guard.Pos.Y];
+            var vecteurGuard = _guard.VecteurInitial;
+            while (pos != null)
+            {
+
+                if (parcouru.Contains(pos.X + "_" + pos.Y + "_" + vecteurGuard))
+                    return true;
+
+                parcouru.Add(pos.X + "_" + pos.Y + "_" + vecteurGuard);
+
+
+                if (pos.Neighbourg[vecteurGuard] != null && pos.Neighbourg[vecteurGuard].isNotUsable)
                 {
-                    var number = line.Split('|').Select(int.Parse).ToArray();
-                    _rules.Add((number[0], number[1]));
+                    vecteurGuard = (vecteurGuard + 1) % 4;
                 }
                 else
                 {
-                    var fact = line.Split(',').Select(int.Parse).ToList();
-                    _factories.Add(fact);
+                    pos = pos.Neighbourg[vecteurGuard];
                 }
+
             }
-            _graphdependance = _rules.GroupBy(r=>r.Item1,r=>r.Item2).ToDictionary(x => x.Key,x => x.ToList());
+            return false;
         }
-        public override int Compute(IEnumerable<string> datas)
+
+        private HashSet<Cell> ParcourirMap(Cell[,] map)
         {
-            InitData(datas);
-            var goodFactory = 0;
-            foreach (var fact in _factories)
+            HashSet<Cell> visitedCell = new HashSet<Cell>();
+            HashSet<string> parcouru = new HashSet<string>();
+
+            var pos = _map[_guard.Pos.X, _guard.Pos.Y];
+            var vecteurGuard = _guard.VecteurInitial;
+            visitedCell.Add(pos);
+            while (pos != null)
             {
-                if (!IsValidUpdate(fact))
+
+                if (parcouru.Contains(pos.X + "_" + pos.Y + "_" + vecteurGuard))
+                    break;
+
+                visitedCell.Add(pos);
+                parcouru.Add(pos.X + "_" + pos.Y + "_" + vecteurGuard);
+
+
+                if (pos.Neighbourg[vecteurGuard] != null && pos.Neighbourg[vecteurGuard].isNotUsable)
                 {
-                    var reorderfact=reorder(fact);
-                    goodFactory += FindMiddlePage(reorderfact);
+                    vecteurGuard = (vecteurGuard + 1) % 4;
                 }
-            }
-            return goodFactory;
-        }
-
-        private IList<int> reorder(IList<int> fact)
-        {
-            // montecarlo
-
-            // algo de reorder
-            //  on part du debut on vérifie les regles needBefore
-            //  si une regle n'est pas vérfier on déplace le  
-            var order = new List<int>();
-            var visited = new HashSet<int>();
-            var tempMark = new HashSet<int>();
-
-            foreach (var page in fact)
-            {
-                if (!visited.Contains(page))
-                    Visit(page, fact, visited, tempMark, order);
-            }
-
-            order.Reverse();
-            return order.Where(fact.Contains).ToList();
-        }
-
-        private void Visit(int page, IList<int> fact, HashSet<int>  visited, HashSet<int>  tempMark, List<int> order)
-        {
-            if (visited.Contains(page)) return;
-            if (tempMark.Contains(page))
-                throw new InvalidOperationException("Cycle detected in rules.");
-
-            tempMark.Add(page);
-
-            if (_graphdependance.ContainsKey(page))
-            {
-                foreach (var neighbor in _graphdependance[page])
+                else
                 {
-                    if (fact.Contains(neighbor))
-                        Visit(neighbor, fact, visited, tempMark, order);
+                    pos = pos.Neighbourg[vecteurGuard];
                 }
-            }
 
-            tempMark.Remove(page);
-            visited.Add(page);
-            order.Add(page);
+            }
+            return visitedCell;
         }
 
-        private bool IsValidUpdate(IList<int> pages)
+        private Cell[,] ConvertToGrid(string[] input)
         {
-            var pageIndex = pages.Select((page, index) => (page, index)).ToDictionary(p => p.page, p => p.index);
 
-            foreach (var (X, Y) in _rules)
+            int rows = input.Length;
+            int cols = input[0].Length;
+            Cell[,] grid = new Cell[rows, cols];
+
+            for (int i = 0; i < rows; i++)
             {
-                if (pageIndex.ContainsKey(X) && pageIndex.ContainsKey(Y))
+                for (int j = 0; j < cols; j++)
                 {
-                    if (pageIndex[X] >= pageIndex[Y])
-                        return false;
+
+                    grid[i, j] = new Cell(i, j);
+                    if (input[i][j] == '#')
+                    {
+                        grid[i, j].isNotUsable = true;
+                    }
+                    if (i > 0)
+                    {
+                        grid[i, j].Neighbourg[0] = grid[i - 1, j];
+                        grid[i - 1, j] .Neighbourg[2] = grid[i, j];
+                    }
+                        
+                    if (j > 0)
+                    {
+                        grid[i, j].Neighbourg[3] = grid[i, j - 1];
+                        grid[i, j - 1].Neighbourg[1] = grid[i, j];
+                    }
+                    if (new[] { '^', '>', 'v', '<' }.Contains(input[i][j]))
+                    {
+                        _guard.Pos = grid[i, j];
+
+                        _guard.VecteurInitial = (input[i][j] == '^' ? 0
+                                                    : input[i][j] == '>' ? 1
+                                                    : input[i][j] == 'v' ? 2
+                                                    : 3);
+                    }
                 }
             }
 
-            return true;
+            return grid;
         }
+    }
 
-        private int FindMiddlePage(IList<int> pages)
+
+    public class Guard
+    {
+        public Cell Pos;
+
+        public int VecteurInitial = 0;
+
+        public Guard()
         {
-            int middleIndex = pages.Count / 2;
-            return pages[middleIndex];
         }
+    }
+
+    public class Cell
+    {
+        public int X;
+        public int Y;
+
+        public bool isNotUsable=false;
+
+        public Cell(int X, int Y)
+        {
+            this.X = X;
+            this.Y = Y;
+            Neighbourg = new Cell[4];
+        }
+        public Cell[] Neighbourg
+        { get; set; }
+
     }
 }

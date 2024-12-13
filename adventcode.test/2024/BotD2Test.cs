@@ -19,7 +19,7 @@ namespace adventcode.test._2024
         {
             
 
-            IBot bot = new BotD3a();
+            IBot bot = new BotD2a();
             var resultat = bot.Compute(datas);
             Assert.Equal(2, resultat);
 
@@ -29,7 +29,7 @@ namespace adventcode.test._2024
         public void b()
         {
 
-            IBot bot = new BotD3b();
+            IBot bot = new BotD2b();
             var resultat = bot.Compute(datas);
             Assert.Equal(4, resultat);
 
