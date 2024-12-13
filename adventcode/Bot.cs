@@ -8,7 +8,7 @@ namespace adventcode
 {
     public abstract class Bot : IBot
     {
-        public abstract int Compute(IEnumerable<string> datas);
+        public abstract long Compute(IEnumerable<string> datas);
 
         public IEnumerable<string> LoadData(string path)
         {

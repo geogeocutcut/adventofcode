@@ -36,7 +36,7 @@ namespace adventcode._2024
             }
             _graphdependance = _rules.GroupBy(r=>r.Item1,r=>r.Item2).ToDictionary(x => x.Key,x => x.ToList());
         }
-        public override int Compute(IEnumerable<string> datas)
+        public override long Compute(IEnumerable<string> datas)
         {
             InitData(datas);
             var goodFactory = 0;

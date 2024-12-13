@@ -14,11 +14,11 @@ namespace adventcode._2024
 
 
 
-        public override int Compute (IEnumerable<string> datas)
+        public override long Compute (IEnumerable<string> datas)
         {
             DeserializeDatas(datas);
 
-            int distTotal = 0;
+            long distTotal = 0;
             int coeff = 0;
             for (int i = 0; i < ints1.Count; i++) {
                 coeff = ints2.ContainsKey(ints1[i]) ? ints2[ints1[i]] : 0;

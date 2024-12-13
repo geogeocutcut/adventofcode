@@ -32,7 +32,7 @@ namespace adventcode._2024
                 }
             }
         }
-        public override int Compute(IEnumerable<string> datas)
+        public override long Compute(IEnumerable<string> datas)
         {
             InitData(datas);
             var goodFactory = 0;

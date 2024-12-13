@@ -10,7 +10,7 @@ namespace adventcode._2024
     public class BotD2b :  Bot
     {
 
-        public override int Compute(IEnumerable<string> datas)
+        public override long Compute(IEnumerable<string> datas)
         {
             
 

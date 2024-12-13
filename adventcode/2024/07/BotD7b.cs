@@ -11,7 +11,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace adventcode._2024
 {
-    public class BotD7a : Bot
+    public class BotD7b : Bot
     {
         List<(long, long[])> equations = new List<(long, long[])>();
         public override long Compute(IEnumerable<string> datas)
@@ -42,6 +42,8 @@ namespace adventcode._2024
                 {
                     if (res + numbers[i] <= total) tmp.Add(res + numbers[i]);
                     if (res * numbers[i] <= total) tmp.Add(res * numbers[i]);
+                    long resconcat = long.Parse($"{res}{numbers[i]}");
+                    if (resconcat <= total) tmp.Add(resconcat);
                 }
                 resultats = tmp;
                 i++;

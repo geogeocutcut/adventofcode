@@ -9,6 +9,6 @@ namespace adventcode
     public interface IBot
     {
         public IEnumerable<string> LoadData(string path);
-        public int Compute(IEnumerable<string> datas);
+        public long Compute(IEnumerable<string> datas);
     }
 }

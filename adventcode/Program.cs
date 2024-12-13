@@ -4,11 +4,13 @@ namespace adventcode
 {
     internal class Program
     {
+        static (IBot, string) config => (new BotD7b(), @"./2024/07/input1.txt");
+
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            IBot bot = new BotD6b();
-            var datas = bot.LoadData(@"./2024/06/input1.txt");
+            IBot bot = config.Item1;
+            var datas = bot.LoadData(config.Item2);
             var resultats = bot.Compute(datas);
             Console.WriteLine($"Le résultat est : {resultats}");
         }

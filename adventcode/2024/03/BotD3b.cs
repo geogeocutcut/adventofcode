@@ -15,7 +15,7 @@ namespace adventcode._2024
         string doPattern = @"do\(\)";
         string dontPattern = @"don't\(\)";
 
-        public override int Compute(IEnumerable<string> datas)
+        public override long Compute(IEnumerable<string> datas)
         {
             int resultat = 0;
             string memory = datas.ElementAt(0);

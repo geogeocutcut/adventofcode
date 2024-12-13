@@ -16,7 +16,7 @@ namespace adventcode._2024
 
         Guard _guard = new Guard(); 
 
-        public override int Compute(IEnumerable<string> datas)
+        public override long Compute(IEnumerable<string> datas)
         {
             int coutLoop = 0;
             _map=ConvertToGrid(datas.ToArray());

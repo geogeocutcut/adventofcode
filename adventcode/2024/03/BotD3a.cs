@@ -13,7 +13,7 @@ namespace adventcode._2024
 
         string pattern = @"mul\((\d{1,3}),(\d{1,3})\)";
 
-        public override int Compute(IEnumerable<string> datas)
+        public override long Compute(IEnumerable<string> datas)
         {
             MatchCollection matches = Regex.Matches(datas.ElementAt(0), pattern);
 
