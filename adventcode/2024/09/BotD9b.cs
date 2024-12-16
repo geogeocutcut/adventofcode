@@ -14,7 +14,7 @@ namespace adventcode._2024
 {
     public class BotD9b : Bot
     {
-        Dictionary<int, (int,string)> disk = new Dictionary<int, (int, string)>();
+        (int,string[])[] disk ;
         public override long Compute(IEnumerable<string> datas)
         {
             computeDisk(datas);
@@ -25,66 +25,94 @@ namespace adventcode._2024
         private long checksumDisk()
         {
             long result = 0;
-            for(int i=0;i< disk.Count;i++)
+            long ind = 0;
+            for(int i=0;i< disk.Count();i++)
             {
-                if (disk[i] == ".")
-                    break;
-                result += i * long.Parse(disk[i].ToString());
+                for (int j = 0; j < disk[i].Item2.Length; j++)
+                {
+                    if (disk[i].Item2[j] != ".")
+                    {
+                        result += ind * int.Parse(disk[i].Item2[j]);
+                    }
+                    ind++;
+                }
             }
             return result;
         }
 
         private void fragmentDisk()
         {
-            int i = 0;
-            int j = disk.Count()-1;
-            while (i < j)
+            int i = disk.Count() - 1;
+            while (i >= 0)
             {
-                if(disk[i] ==".")
+                var bloc = disk[i];
+                // c'est de la data
+                if(bloc.Item1==1)
                 {
-                    // c'est un espace libre
-                    while (i < j && disk[j] == ".")
+                    int j = 0;
+                    while(j< disk.Count() && j<i)
                     {
-                        j--;
+                        var free = disk[j];
+                        if(free.Item1 == 0 && free.Item2.Length >= bloc.Item2.Length)
+                        {
+                            disk[j] = bloc;
+
+                            disk[i] = new(0, new string[]{ });
+                            for (int k=0;k< bloc.Item2.Length;k++)
+                            {
+                                disk[i].Item2[k] = ".";
+                            }
+
+                            if (free.Item2.Length - bloc.Item2.Length > 0)
+                            {
+                                free.Item2 = new string[free.Item2.Length - bloc.Item2.Length];
+                                InsertBloc(j + 1, free);
+                            }
+                        }
+                        j++;
                     }
-                    disk[i] = disk[j];
-                    disk[j] = ".";
                 }
-                i++;
+                i--;
             }
+
+            
+        }
+
+        private void InsertBloc(int v, (int, string[]) elt)
+        {
+            Array.Resize(ref disk, disk.Length + 1);
+            Array.Copy(disk, v, disk, v + 1, disk.Length - v - 1);
+            disk[v] = elt;
         }
 
         private void computeDisk(IEnumerable<string> datas)
         {
             int id = 0;
             int k = 0;
-            var l = 0;
             foreach (var c in datas.ElementAt(0))
             {
                 var length = int.Parse(c.ToString());
-
+                disk = new (int, string[])[datas.ElementAt(0).Length];
+                var data = new string[length];
                 for (int i = 0; i < length; i++)
                 {
                     if (k % 2 == 0)
-                        disk[l]= id.ToString();
+                        data[i] = id.ToString();
                     else
-                        disk[l]= ".";
+                        data[i] = ".";
 
-                    l++;
+
+                    
                 }
                 if (k % 2 == 0)
                 {
-                    indexation[id] = (l, length);
+                    disk[k] = (1, data);
                     id++;
                 }
+                else
+                    disk[k] = (0, data);
                 k++;
             }
-        }
-
-        public class Block
-        {
-            public int length;
-
         }
     }
 }
