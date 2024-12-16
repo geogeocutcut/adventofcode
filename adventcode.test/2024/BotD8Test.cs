@@ -24,16 +24,16 @@ namespace adventcode.test._2024
         {
             IBot bot = new BotD8a();
             var resultat = bot.Compute(datas);
-            Assert.Equal(3749, resultat);
+            Assert.Equal(14, resultat);
         }
 
         [Fact]
         public void b()
         {
 
-            IBot bot = new BotD7b();
+            IBot bot = new BotD8b();
             var resultat = bot.Compute(datas);
-            Assert.Equal(11387, resultat);
+            Assert.Equal(34, resultat);
 
         }
     }
