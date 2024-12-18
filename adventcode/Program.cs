@@ -4,7 +4,7 @@ namespace adventcode
 {
     internal class Program
     {
-        static (IBot, string) config => (new BotD9a(), @"./2024/09/input1.txt");
+        static (IBot, string) config => (new BotD11b(), @"./2024/11/input1.txt");
 
         static void Main(string[] args)
         {

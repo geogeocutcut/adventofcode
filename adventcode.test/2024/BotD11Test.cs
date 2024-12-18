@@ -2,27 +2,27 @@ using adventcode._2024;
 
 namespace adventcode.test._2024
 {
-    public class BotD9Test
+    public class BotD11Test
     {
         string[] datas = new string[]
         {
-            "2333133121414131402"
+            "125 17"
         };
         [Fact]
         public void a()
         {
-            IBot bot = new BotD10a();
+            IBot bot = new BotD11a();
             var resultat = bot.Compute(datas);
-            Assert.Equal(1928, resultat);
+            Assert.Equal(55312, resultat);
         }
 
         [Fact]
         public void b()
         {
 
-            IBot bot = new BotD9b();
+            IBot bot = new BotD11b();
             var resultat = bot.Compute(datas);
-            Assert.Equal(2858, resultat);
+            Assert.Equal(65601038650482, resultat);
 
         }
     }

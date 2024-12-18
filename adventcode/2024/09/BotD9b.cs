@@ -50,24 +50,32 @@ namespace adventcode._2024
                 if(bloc.Item1==1)
                 {
                     int j = 0;
-                    while(j< disk.Count() && j<i)
+                    while(j< disk.Count() && j<i )
                     {
                         var free = disk[j];
                         if(free.Item1 == 0 && free.Item2.Length >= bloc.Item2.Length)
                         {
                             disk[j] = bloc;
 
-                            disk[i] = new(0, new string[]{ });
+                            var temp = new List<string>();
                             for (int k=0;k< bloc.Item2.Length;k++)
                             {
-                                disk[i].Item2[k] = ".";
+                                temp.Add(".");
                             }
+
+                            disk[i] = new(0, temp.ToArray());
 
                             if (free.Item2.Length - bloc.Item2.Length > 0)
                             {
-                                free.Item2 = new string[free.Item2.Length - bloc.Item2.Length];
+                                temp = new List<string>();
+                                for (int k= 0; k< free.Item2.Length - bloc.Item2.Length; k++)
+                                {
+                                    temp.Add(".");
+                                }
+                                free.Item2 = temp.ToArray();
                                 InsertBloc(j + 1, free);
                             }
+                            break;
                         }
                         j++;
                     }
@@ -89,10 +97,10 @@ namespace adventcode._2024
         {
             int id = 0;
             int k = 0;
+            disk = new (int, string[])[datas.ElementAt(0).Length];
             foreach (var c in datas.ElementAt(0))
             {
                 var length = int.Parse(c.ToString());
-                disk = new (int, string[])[datas.ElementAt(0).Length];
                 var data = new string[length];
                 for (int i = 0; i < length; i++)
                 {
