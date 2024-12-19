@@ -13,7 +13,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace adventcode._2024
 {
-    public class BotD12a : Bot
+    public class BotD12b : Bot
     {
         char[,] map;
         List<HashSet<(int,int)>> Zones = new List<HashSet<(int, int)>>();
@@ -27,22 +27,48 @@ namespace adventcode._2024
 
         private int CalculBounderies(HashSet<(int, int)> zone)
         {
-            int bounderies = 0;
+            int segCount = 0;
+            List<(char,int, int)> bounderies = new List<(char, int, int)>();
             int[] dRow = { -1, 1, 0, 0 };
             int[] dCol = { 0, 0, -1, 1 };
             foreach (var cel in zone)
             {
                 for (int k = 0; k < 4; k++)
                 {
+                    char dir = dRow[k] == 0 ? 'V' : 'H';
+
                     int newRow = cel.Item1 + dRow[k];
                     int newCol = cel.Item2 + dCol[k];
                     if(!zone.Contains((newRow, newCol)))
                     {
-                        bounderies++;
+                        //if(!bounderies.Contains((dir, newRow, newCol)))
+                            bounderies.Add((dir, newRow, newCol));
                     }
                 }
             }
-            return bounderies;
+            //return bounderies.Count();
+            var boundsH = bounderies.Where(b => b.Item1 == 'H').OrderBy(b=>b.Item2).ThenBy(b=>b.Item3);
+            (char, int, int) previous = ('X',-9,-9);
+            foreach (var b in boundsH)
+            {
+                if(!(previous.Item2 == b.Item2 && previous.Item3 == b.Item3-1))
+                {
+                    segCount += 1;
+                }
+                previous = b;
+            }
+
+            var boundsV = bounderies.Where(b => b.Item1 == 'V').OrderBy(b => b.Item3).ThenBy(b => b.Item2);
+            previous = ('X', -9, -9);
+            foreach (var b in boundsV)
+            {
+                if (!(previous.Item2 == b.Item2-1 && previous.Item3 == b.Item3))
+                {
+                    segCount += 1;
+                }
+                previous = b;
+            }
+            return segCount;
         }
 
         private void BuildZones()

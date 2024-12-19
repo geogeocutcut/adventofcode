@@ -11,7 +11,7 @@ namespace adventcode.test._2024
         [Fact]
         public void a()
         {
-            IBot bot = new BotD10a();
+            IBot bot = new BotD9a();
             var resultat = bot.Compute(datas);
             Assert.Equal(1928, resultat);
         }

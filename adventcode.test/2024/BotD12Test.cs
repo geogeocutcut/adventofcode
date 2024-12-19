@@ -17,6 +17,12 @@ namespace adventcode.test._2024
             "MIIISIJEEE",
             "MMMISSJEEE"
         };
+        string[] datas2 = new string[]
+        {
+            "OOOOO",
+            "OXOXO",
+            "OXXXO"
+        };
         [Fact]
         public void a()
         {
@@ -29,9 +35,19 @@ namespace adventcode.test._2024
         public void b()
         {
 
-            IBot bot = new BotD11b();
+            IBot bot = new BotD12b();
             var resultat = bot.Compute(datas);
-            Assert.Equal(65601038650482, resultat);
+            Assert.Equal(1206, resultat);
+
+        }
+
+        [Fact]
+        public void c()
+        {
+
+            IBot bot = new BotD12b();
+            var resultat = bot.Compute(datas2);
+            Assert.Equal(160, resultat);
 
         }
     }
